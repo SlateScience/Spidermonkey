@@ -21,7 +21,7 @@ rm -f ./config.cache
             --disable-shared-js --disable-tests --disable-ion --disable-jm --disable-tm --enable-llvm-hacks \
             --disable-methodjit --disable-monoic --disable-polyic ${YARR_JIT_OPTION} \
             --enable-optimize=-O3 --enable-strip --enable-install-strip \
-            ${DEBUG_OPTION}
+            ${DEBUG_OPTION} --enable-intl-api=no
 make -j$cpus
 if (( $? )) ; then
     echo "error when compiling iOS ${CPU_ARCH} ${IOS_TARGET} version of the library"
