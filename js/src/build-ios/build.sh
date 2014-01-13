@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 
 ## this script is supposed to be run one directory below the original configure script
 ## usually in build-ios
@@ -76,6 +76,9 @@ ls | grep -v build.sh | grep -v $RELEASE_DIR | xargs rm -rf
 # create i386 version (simulator)
 IOS_TARGET=iPhoneSimulator
 CPU_ARCH=i386
+ARCH_OPTION=
+YARR_JIT_OPTION=
+THUMB_OPTION=
 DEBUG_OPTION="--enable-debug"
 build_with_arch
 
