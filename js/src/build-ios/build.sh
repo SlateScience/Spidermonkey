@@ -46,6 +46,7 @@ CPU_ARCH=armv7
 ARCH_OPTION="--with-ios-arch=${CPU_ARCH}"
 YARR_JIT_OPTION="--disable-yarr-jit"
 THUMB_OPTION="--with-thumb=yes"
+DEBUG_OPTION="--disable-debug"
 build_with_arch
 
 
@@ -56,6 +57,16 @@ CPU_ARCH=armv7s
 ARCH_OPTION="--with-ios-arch=${CPU_ARCH}"
 YARR_JIT_OPTION="--disable-yarr-jit"
 THUMB_OPTION="--with-thumb=yes"
+DEBUG_OPTION="--disable-debug"
+build_with_arch
+
+# create arm64 version
+IOS_TARGET=iPhoneOS
+CPU_ARCH=arm64
+ARCH_OPTION="--with-ios-arch=${CPU_ARCH}"
+YARR_JIT_OPTION="--disable-yarr-jit"
+THUMB_OPTION="--with-thumb=yes"
+DEBUG_OPTION="--disable-debug"
 build_with_arch
 
 # remove everything but the static libraries and this script
@@ -65,14 +76,6 @@ ls | grep -v build.sh | grep -v $RELEASE_DIR | xargs rm -rf
 IOS_TARGET=iPhoneSimulator
 CPU_ARCH=i386
 DEBUG_OPTION="--enable-debug"
-build_with_arch
-
-# create arm64 version
-IOS_TARGET=iPhoneOS
-CPU_ARCH=arm64
-ARCH_OPTION="--with-ios-arch=${CPU_ARCH}"
-YARR_JIT_OPTION="--disable-yarr-jit"
-THUMB_OPTION="--with-thumb=yes"
 build_with_arch
 
 #
