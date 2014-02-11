@@ -31,7 +31,7 @@ MOZ_ARG_WITH_STRING(ios-arch,
 case "$ios_target" in
 iPhoneOS|iPhoneSimulator)
     dnl test for Xcode 4.3+
-    if ! test -d "/Applications/Xcode.app/Contents/Developer/Platforms" ; then
+    if ! test -d "`xcode-select --print-path`/Platforms" ; then
         AC_MSG_ERROR([You must install Xcode first from the App Store])
     fi
 
@@ -54,9 +54,9 @@ iPhoneOS|iPhoneSimulator)
     fi
     target_os=darwin
 
-    xcode_base="/Applications/Xcode.app/Contents/Developer/Platforms"
+    xcode_base="`xcode-select --print-path`/Platforms"
     ios_sdk_root=""
-    ios_toolchain="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin"
+    ios_toolchain="`xcode-select --print-path`/Toolchains/XcodeDefault.xctoolchain/usr/bin"
 
     dnl test to see if the actual sdk exists
     ios_sdk_root="$xcode_base"/$ios_target.platform/Developer/SDKs/$ios_target"$ios_sdk_version".sdk
