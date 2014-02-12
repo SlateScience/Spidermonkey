@@ -20,8 +20,8 @@ rm -f ./config.cache
 ../configure --with-ios-target=${IOS_TARGET} --with-ios-version=$IOS_SDK --with-ios-min-version=$MIN_IOS_VERSION ${ARCH_OPTION} \
             --disable-shared-js --disable-tests --disable-ion --disable-jm --disable-tm --enable-llvm-hacks \
             --disable-methodjit --disable-monoic --disable-polyic ${YARR_JIT_OPTION} \
-            --enable-optimize=-O3 --enable-strip --enable-install-strip \
-            ${DEBUG_OPTION} --enable-intl-api=no
+            --enable-optimize=-O3 --enable-strip --enable-install-strip --enable-intl-api=no \
+            ${DEBUG_OPTION}
 make -j$cpus
 if (( $? )) ; then
     echo "error when compiling iOS ${CPU_ARCH} ${IOS_TARGET} version of the library"
@@ -60,14 +60,15 @@ THUMB_OPTION="--with-thumb=yes"
 DEBUG_OPTION="--disable-debug"
 build_with_arch
 
-# create arm64 version
-IOS_TARGET=iPhoneOS
-CPU_ARCH=arm64
-ARCH_OPTION="--with-ios-arch=${CPU_ARCH}"
-YARR_JIT_OPTION="--disable-yarr-jit"
-THUMB_OPTION="--with-thumb=yes"
-DEBUG_OPTION="--disable-debug"
-build_with_arch
+#
+# create ios version (arm64)
+#IOS_TARGET=iPhoneOS
+#CPU_ARCH=arm64
+#ARCH_OPTION="--with-ios-arch=${CPU_ARCH}"
+#YARR_JIT_OPTION="--disable-yarr-jit"
+#THUMB_OPTION="--with-thumb=yes"
+#DEBUG_OPTION="--disable-debug"
+#build_with_arch
 
 # remove everything but the static libraries and this script
 ls | grep -v build.sh | grep -v $RELEASE_DIR | xargs rm -rf
