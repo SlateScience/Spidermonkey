@@ -1,3 +1,5 @@
+#!/bin/sh -f
+
 # options
 develop=
 release=
@@ -11,7 +13,7 @@ Build SpiderMonkey using Android NDK
 
 OPTIONS:
 -d	Build for development
--r  Build for release. specify RELEASE_DIR.
+-r  Build for release
 -h	this help
 
 EOF
@@ -40,13 +42,16 @@ host_arch=`uname -m`
 build_with_arch()
 {
 
-NDK_ROOT=$HOME/bin/android-ndk
+#NDK_ROOT=$HOME/bin/android-ndk
+if [[ ! $NDK_ROOT ]]; then
+	echo "You have to define NDK_ROOT"
+	exit 1
+fi
 
 rm -rf dist
 rm -f ./config.cache
 
 ../configure --with-android-ndk=$NDK_ROOT \
-             --with-android-sdk=$HOME/bin/android-sdk \
              --with-android-toolchain=$NDK_ROOT/toolchains/${TOOLS_ARCH}-${GCC_VERSION}/prebuilt/${host_os}-${host_arch} \
              --with-android-version=9 \
              --enable-application=mobile/android \
@@ -72,13 +77,15 @@ if [[ $develop ]]; then
 fi
 
 if [[ $release ]]; then
+# strip unneeded symbols
+    $NDK_ROOT/toolchains/${TOOLS_ARCH}-${GCC_VERSION}/prebuilt/${host_os}-${host_arch}/bin/${TOOLNAME_PREFIX}-strip \
+        --strip-unneeded libjs_static.a
+
 # copy specific files from dist
-    rm -r "$RELEASE_DIR/include"
-    rm -r "$RELEASE_DIR/lib/$RELEASE_ARCH_DIR"
-    mkdir -p "$RELEASE_DIR/include"
-    cp -RL dist/include/* "$RELEASE_DIR/include/"
-    mkdir -p "$RELEASE_DIR/lib/$RELEASE_ARCH_DIR"
-    cp -L dist/lib/libjs_static.a "$RELEASE_DIR/lib/$RELEASE_ARCH_DIR/libjs_static.a"
+    rm -r "$RELEASE_DIR/$RELEASE_ARCH_DIR"
+    mkdir -p "$RELEASE_DIR/$RELEASE_ARCH_DIR/lib"
+    cp -RL dist/include "$RELEASE_DIR/$RELEASE_ARCH_DIR"
+    cp -L dist/lib/libjs_static.a "$RELEASE_DIR/$RELEASE_ARCH_DIR/lib/libjs_static.a"
 
 # strip unneeded symbols
     $HOME/bin/android-ndk/toolchains/${TOOLS_ARCH}-${GCC_VERSION}/prebuilt/${host_os}-${host_arch}/bin/${TOOLNAME_PREFIX}-strip \
@@ -113,3 +120,8 @@ RELEASE_ARCH_DIR=x86
 GCC_VERSION=4.6
 TOOLNAME_PREFIX=i686-linux-android
 build_with_arch
+
+#copy to release dir
+rm -rf dist
+mkdir dist
+mv $RELEASE_DIR dist/release
