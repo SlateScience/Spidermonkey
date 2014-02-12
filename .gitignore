@@ -57,3 +57,4 @@ js/src/build-osx/*
 ./include
 ./lib
 js/src/autom4te.cache
+_psutil_*.so
