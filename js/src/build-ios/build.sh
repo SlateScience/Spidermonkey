@@ -49,7 +49,6 @@ THUMB_OPTION="--with-thumb=yes"
 DEBUG_OPTION="--disable-debug"
 build_with_arch
 
-
 #
 # create ios version (armv7s)
 IOS_TARGET=iPhoneOS
@@ -60,15 +59,6 @@ THUMB_OPTION="--with-thumb=yes"
 DEBUG_OPTION="--disable-debug"
 build_with_arch
 
-#
-# create ios version (arm64)
-#IOS_TARGET=iPhoneOS
-#CPU_ARCH=arm64
-#ARCH_OPTION="--with-ios-arch=${CPU_ARCH}"
-#YARR_JIT_OPTION="--disable-yarr-jit"
-#THUMB_OPTION="--with-thumb=yes"
-#DEBUG_OPTION="--disable-debug"
-#build_with_arch
 
 # remove everything but the static libraries and this script
 ls | grep -v build.sh | grep -v $RELEASE_DIR | xargs rm -rf
@@ -81,6 +71,7 @@ YARR_JIT_OPTION=
 THUMB_OPTION=
 DEBUG_OPTION="--enable-debug"
 build_with_arch
+
 
 #
 # lipo create
