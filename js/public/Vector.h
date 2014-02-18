@@ -1,12 +1,11 @@
-/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
- * vim: set ts=4 sw=4 et tw=99 ft=cpp:
- *
+/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+ * vim: set ts=8 sts=4 et sw=4 tw=99:
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef jsvector_h_
-#define jsvector_h_
+#ifndef js_Vector_h
+#define js_Vector_h
 
 #include "mozilla/Attributes.h"
 #include "mozilla/TypeTraits.h"
@@ -252,13 +251,13 @@ class Vector : private AllocPolicy
     T *mBegin;
     size_t mLength;     /* Number of elements in the Vector. */
     size_t mCapacity;   /* Max number of elements storable in the Vector without resizing. */
-#ifdef DEBUG
+#ifdef JS_DEBUG
     size_t mReserved;   /* Max elements of reserved or used space in this vector. */
 #endif
 
     mozilla::AlignedStorage<sInlineBytes> storage;
 
-#ifdef DEBUG
+#ifdef JS_DEBUG
     friend class ReentrancyGuard;
     bool entered;
 #endif
@@ -288,7 +287,7 @@ class Vector : private AllocPolicy
         return mBegin + mLength;
     }
 
-#ifdef DEBUG
+#ifdef JS_DEBUG
     size_t reserved() const {
         JS_ASSERT(mReserved <= mCapacity);
         JS_ASSERT(mLength <= mReserved);
@@ -531,7 +530,7 @@ JS_ALWAYS_INLINE
 Vector<T,N,AllocPolicy>::Vector(AllocPolicy ap)
   : AllocPolicy(ap), mBegin((T *)storage.addr()), mLength(0),
     mCapacity(sInlineCapacity)
-#ifdef DEBUG
+#ifdef JS_DEBUG
   , mReserved(sInlineCapacity), entered(false)
 #endif
 {}
@@ -541,13 +540,13 @@ template <class T, size_t N, class AllocPolicy>
 JS_ALWAYS_INLINE
 Vector<T, N, AllocPolicy>::Vector(MoveRef<Vector> rhs)
     : AllocPolicy(rhs)
-#ifdef DEBUG
+#ifdef JS_DEBUG
     , entered(false)
 #endif
 {
     mLength = rhs->mLength;
     mCapacity = rhs->mCapacity;
-#ifdef DEBUG
+#ifdef JS_DEBUG
     mReserved = rhs->mReserved;
 #endif
 
@@ -568,7 +567,7 @@ Vector<T, N, AllocPolicy>::Vector(MoveRef<Vector> rhs)
         rhs->mBegin = (T *) rhs->storage.addr();
         rhs->mCapacity = sInlineCapacity;
         rhs->mLength = 0;
-#ifdef DEBUG
+#ifdef JS_DEBUG
         rhs->mReserved = sInlineCapacity;
 #endif
     }
@@ -715,7 +714,7 @@ Vector<T,N,AP>::initCapacity(size_t request)
         return false;
     mBegin = newbuf;
     mCapacity = request;
-#ifdef DEBUG
+#ifdef JS_DEBUG
     mReserved = request;
 #endif
     return true;
@@ -729,7 +728,7 @@ Vector<T,N,AP>::reserve(size_t request)
     if (request > mCapacity && !growStorageBy(request - mLength))
         return false;
 
-#ifdef DEBUG
+#ifdef JS_DEBUG
     if (request > mReserved)
         mReserved = request;
     JS_ASSERT(mLength <= mReserved);
@@ -762,7 +761,7 @@ Vector<T,N,AP>::growByImpl(size_t incr)
     if (InitNewElems)
         Impl::initialize(endNoCheck(), newend);
     mLength += incr;
-#ifdef DEBUG
+#ifdef JS_DEBUG
     if (mLength > mReserved)
         mReserved = mLength;
 #endif
@@ -827,7 +826,7 @@ Vector<T,N,AP>::clearAndFree()
     this->free_(beginNoCheck());
     mBegin = (T *)storage.addr();
     mCapacity = sInlineCapacity;
-#ifdef DEBUG
+#ifdef JS_DEBUG
     mReserved = sInlineCapacity;
 #endif
 }
@@ -848,7 +847,7 @@ Vector<T,N,AP>::append(U t)
     if (mLength == mCapacity && !growStorageBy(1))
         return false;
 
-#ifdef DEBUG
+#ifdef JS_DEBUG
     if (mLength + 1 > mReserved)
         mReserved = mLength + 1;
 #endif
@@ -875,7 +874,7 @@ Vector<T,N,AP>::appendN(const T &t, size_t needed)
     if (mLength + needed > mCapacity && !growStorageBy(needed))
         return false;
 
-#ifdef DEBUG
+#ifdef JS_DEBUG
     if (mLength + needed > mReserved)
         mReserved = mLength + needed;
 #endif
@@ -937,7 +936,7 @@ Vector<T,N,AP>::append(const U *insBegin, const U *insEnd)
     if (mLength + needed > mCapacity && !growStorageBy(needed))
         return false;
 
-#ifdef DEBUG
+#ifdef JS_DEBUG
     if (mLength + needed > mReserved)
         mReserved = mLength + needed;
 #endif
@@ -1017,7 +1016,7 @@ Vector<T,N,AP>::extractRawBuffer()
         mBegin = (T *)storage.addr();
         mLength = 0;
         mCapacity = sInlineCapacity;
-#ifdef DEBUG
+#ifdef JS_DEBUG
         mReserved = sInlineCapacity;
 #endif
     }
@@ -1053,7 +1052,7 @@ Vector<T,N,AP>::replaceRawBuffer(T *p, size_t aLength)
         mLength = aLength;
         mCapacity = aLength;
     }
-#ifdef DEBUG
+#ifdef JS_DEBUG
     mReserved = aLength;
 #endif
 }
@@ -1094,7 +1093,7 @@ Vector<T,N,AP>::swap(Vector &other)
 
     Swap(mLength, other.mLength);
     Swap(mCapacity, other.mCapacity);
-#ifdef DEBUG
+#ifdef JS_DEBUG
     Swap(mReserved, other.mReserved);
 #endif
 }
@@ -1105,4 +1104,4 @@ Vector<T,N,AP>::swap(Vector &other)
 #pragma warning(pop)
 #endif
 
-#endif /* jsvector_h_ */
+#endif /* js_Vector_h */

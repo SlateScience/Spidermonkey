@@ -3,8 +3,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef CTYPES_H
-#define CTYPES_H
+#ifndef ctypes_CTypes_h
+#define ctypes_CTypes_h
+
+#include "mozilla/Assertions.h"
+#include "mozilla/TypeTraits.h"
 
 #include "jscntxt.h"
 #include "jsapi.h"
@@ -57,6 +60,8 @@ private:
 template<class T, size_t N = 0>
 class Array : public Vector<T, N, SystemAllocPolicy>
 {
+  MOZ_STATIC_ASSERT((!mozilla::IsSame<T, JS::Value>::value),
+                    "use JS::AutoValueVector instead");
 };
 
 // String and AutoString classes, based on Vector.
@@ -311,15 +316,15 @@ bool IsCTypesGlobal(JSObject* obj);
 
 JSCTypesCallbacks* GetCallbacks(JSObject* obj);
 
-JSBool InitTypeClasses(JSContext* cx, JSHandleObject parent);
+JSBool InitTypeClasses(JSContext* cx, HandleObject parent);
 
-JSBool ConvertToJS(JSContext* cx, JSHandleObject typeObj, JSHandleObject dataObj,
+JSBool ConvertToJS(JSContext* cx, HandleObject typeObj, HandleObject dataObj,
   void* data, bool wantPrimitive, bool ownResult, jsval* result);
 
-JSBool ImplicitConvert(JSContext* cx, jsval val, JSObject* targetType,
+JSBool ImplicitConvert(JSContext* cx, HandleValue val, JSObject* targetType,
   void* buffer, bool isArgument, bool* freePointer);
 
-JSBool ExplicitConvert(JSContext* cx, jsval val, JSHandleObject targetType,
+JSBool ExplicitConvert(JSContext* cx, HandleValue val, HandleObject targetType,
   void* buffer);
 
 /*******************************************************************************
@@ -419,7 +424,7 @@ enum Int64FunctionSlot {
 *******************************************************************************/
 
 namespace CType {
-  JSObject* Create(JSContext* cx, JSHandleObject typeProto, JSHandleObject dataProto,
+  JSObject* Create(JSContext* cx, HandleObject typeProto, HandleObject dataProto,
     TypeCode type, JSString* name, jsval size, jsval align, ffi_type* ffiType);
 
   JSObject* DefineBuiltin(JSContext* cx, JSObject* parent, const char* propName,
@@ -435,20 +440,20 @@ namespace CType {
   bool IsSizeDefined(JSObject* obj);
   size_t GetAlignment(JSObject* obj);
   ffi_type* GetFFIType(JSContext* cx, JSObject* obj);
-  JSString* GetName(JSContext* cx, JSHandleObject obj);
+  JSString* GetName(JSContext* cx, HandleObject obj);
   JSObject* GetProtoFromCtor(JSObject* obj, CTypeProtoSlot slot);
   JSObject* GetProtoFromType(JSContext* cx, JSObject* obj, CTypeProtoSlot slot);
   JSCTypesCallbacks* GetCallbacksFromType(JSObject* obj);
 }
 
 namespace PointerType {
-  JSObject* CreateInternal(JSContext* cx, JSHandleObject baseType);
+  JSObject* CreateInternal(JSContext* cx, HandleObject baseType);
 
   JSObject* GetBaseType(JSObject* obj);
 }
 
 namespace ArrayType {
-  JSObject* CreateInternal(JSContext* cx, JSHandleObject baseType, size_t length,
+  JSObject* CreateInternal(JSContext* cx, HandleObject baseType, size_t length,
     bool lengthDefined);
 
   JSObject* GetBaseType(JSObject* obj);
@@ -479,12 +484,12 @@ namespace FunctionType {
 }
 
 namespace CClosure {
-  JSObject* Create(JSContext* cx, JSHandleObject typeObj, JSHandleObject fnObj,
-    JSHandleObject thisObj, jsval errVal, PRFuncPtr* fnptr);
+  JSObject* Create(JSContext* cx, HandleObject typeObj, HandleObject fnObj,
+    HandleObject thisObj, jsval errVal, PRFuncPtr* fnptr);
 }
 
 namespace CData {
-  JSObject* Create(JSContext* cx, JSHandleObject typeObj, JSHandleObject refObj,
+  JSObject* Create(JSContext* cx, HandleObject typeObj, HandleObject refObj,
     void* data, bool ownResult);
 
   JSObject* GetCType(JSObject* dataObj);
@@ -509,4 +514,4 @@ namespace UInt64 {
 }
 }
 
-#endif
+#endif /* ctypes_CTypes_h */

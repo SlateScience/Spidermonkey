@@ -1,8 +1,8 @@
-/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
-/* vim: set ts=4 sw=4 et tw=79: */
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this file,
- * You can obtain one at http://mozilla.org/MPL/2.0/. */
+/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+ * vim: set ts=8 sts=4 et sw=4 tw=99:
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #include "TraceLogging.h"
 #include <cstdarg>
@@ -61,7 +61,7 @@ js::rdtsc(void)
 }
 #endif
 
-const char* TraceLogging::type_name[] = {
+const char* const TraceLogging::type_name[] = {
     "start,ion_compile",
     "stop,ion_compile",
     "start,ion_cannon",
@@ -104,7 +104,7 @@ TraceLogging::~TraceLogging()
 
     if (entries != NULL) {
         flush();
-        free(entries);
+        js_free(entries);
         entries = NULL;
     }
 }
@@ -112,7 +112,7 @@ TraceLogging::~TraceLogging()
 void
 TraceLogging::grow()
 {
-    Entry* nentries = (Entry*) realloc(entries, numEntries*2*sizeof(Entry));
+    Entry* nentries = (Entry*) js_realloc(entries, numEntries*2*sizeof(Entry));
 
     // Allocating a bigger array failed.
     // Keep using the current storage, but remove all entries by flushing them.
@@ -132,7 +132,7 @@ TraceLogging::log(Type type, const char* file, unsigned int lineno)
 
     // Create array containing the entries if not existing.
     if (entries == NULL) {
-        entries = (Entry*) malloc(numEntries*sizeof(Entry));
+        entries = (Entry*) js_malloc(numEntries*sizeof(Entry));
         if (entries == NULL)
             return;
     }
@@ -214,7 +214,7 @@ TraceLogging::flush()
         }
 
         if (entries[i].file() != NULL) {
-            free(entries[i].file());
+            js_free(entries[i].file());
             entries[i].file_ = NULL;
         }
     }

@@ -1,5 +1,6 @@
-/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
-/* This Source Code Form is subject to the terms of the Mozilla Public
+/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+ * vim: set ts=8 sts=4 et sw=4 tw=99:
+ * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
@@ -8,16 +9,15 @@
 **
 ** Author: Kipp E.B. Hickman
 */
+#include "jsprf.h"
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "jsprf.h"
 #include "jsutil.h"
 #include "jspubtd.h"
 #include "jsstr.h"
-
-#include "js/CharacterEncoding.h"
 
 using namespace js;
 
@@ -368,7 +368,7 @@ cvt_ws(SprintfState *ss, const jschar *ws, int width, int prec, int flags)
     int result;
     /*
      * Supply NULL as the JSContext; errors are not reported,
-     * and malloc() is used to allocate the buffer buffer.
+     * and js_malloc() is used to allocate the buffer buffer.
      */
     if (ws) {
         size_t wslen = js_strlen(ws);
@@ -443,7 +443,7 @@ static struct NumArgState* BuildArgArray( const char *fmt, va_list ap, int* rv, 
 
 
     if( number > NAS_DEFAULT_NUM ){
-        nas = (struct NumArgState*)malloc( number * sizeof( struct NumArgState ) );
+        nas = (struct NumArgState*)js_malloc( number * sizeof( struct NumArgState ) );
         if( !nas ){
             *rv = -1;
             return NULL;
@@ -1038,7 +1038,7 @@ JS_PUBLIC_API(uint32_t) JS_vsxprintf(JSStuffFunc func, void *arg,
 }
 
 /*
-** Stuff routine that automatically grows the malloc'd output buffer
+** Stuff routine that automatically grows the js_malloc'd output buffer
 ** before it overflows.
 */
 static int GrowStuff(SprintfState *ss, const char *sp, uint32_t len)
@@ -1075,7 +1075,7 @@ static int GrowStuff(SprintfState *ss, const char *sp, uint32_t len)
 }
 
 /*
-** sprintf into a malloc'd buffer
+** sprintf into a js_malloc'd buffer
 */
 JS_PUBLIC_API(char *) JS_smprintf(const char *fmt, ...)
 {
