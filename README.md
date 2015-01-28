@@ -39,6 +39,6 @@
  
  - Patches for [SpiderMonkey](https://github.com/ricardoquesada/Spidermonkey/wiki/)
  
+---
 
-
- 
+IMPORTANT: THE INFORMATION IN THIS DOCUMENT IS NOT TOTALLY ACCURATE FOR THIS BRANCH. [MORE DETAILS IN THE WIKI](../../wiki/Building-Spidermonkey-25-for-Cinder-0.8.5-and-the-new-chronotext-toolkit)
