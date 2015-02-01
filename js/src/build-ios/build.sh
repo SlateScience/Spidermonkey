@@ -4,7 +4,6 @@ MIN_IOS_VERSION=5.1.1
 IOS_SDK=8.1
 
 LIPO="xcrun -sdk iphoneos lipo"
-STRIP="xcrun -sdk iphoneos strip"
 
 cpus=$(sysctl hw.ncpu | awk '{print $2}')
 
@@ -20,7 +19,7 @@ rm -rf .deps
     --disable-root-analysis --disable-exact-rooting --enable-gcincremental \
     --disable-ion --disable-jm --disable-tm --disable-methodjit --disable-monoic --disable-polyic --disable-yarr-jit \
     --enable-optimize=-O3 --with-thumb=yes \
-    --disable-debug --enable-strip --enable-install-strip
+    --disable-debug --disable-debug-symbols --enable-strip --enable-install-strip
 
 make -j$cpus
 
@@ -43,7 +42,7 @@ rm -rf .deps
     --disable-root-analysis --disable-exact-rooting --enable-gcincremental \
     --disable-ion --disable-jm --disable-tm --disable-methodjit --disable-monoic --disable-polyic --disable-yarr-jit \
     --enable-optimize=-O3 --with-thumb=yes \
-    --disable-debug --enable-strip --enable-install-strip
+    --disable-debug --disable-debug-symbols --enable-strip --enable-install-strip
 
 make -j$cpus
 
@@ -55,10 +54,9 @@ fi
 mv libjs_static.a libjs_static.arm64.a
 
 
-### LIPO + STRIP ###
+### LIPO + INFO ###
 
 $LIPO -create -output libjs_static.a libjs_static.armv7.a libjs_static.arm64.a
-$STRIP -S libjs_static.a
 $LIPO -info libjs_static.a
 
 
