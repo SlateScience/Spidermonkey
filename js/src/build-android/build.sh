@@ -16,7 +16,6 @@ TARGET_ARCH_ABI=armeabi-v7a
 GCC_VERSION=4.6
 
 TOOLCHAIN=$NDK_ROOT/toolchains/${TARGET}-${GCC_VERSION}/prebuilt/${host_kernel}-${host_arch}
-STRIP=$TOOLCHAIN/bin/${TARGET}-strip
 
 ###
 
@@ -25,7 +24,6 @@ rm -rf .deps
 
 ../configure --with-android-ndk=$NDK_ROOT \
     --with-android-toolchain=$TOOLCHAIN \
-    --with-android-version=9 \
     --with-android-gnu-compiler-version=${GCC_VERSION} \
     --with-arch=${TARGET_ARCH} \
     --target=${TARGET} \
@@ -33,11 +31,9 @@ rm -rf .deps
     --disable-shared-js --disable-tests --enable-intl-api=no \
     --disable-threadsafe \
     --disable-root-analysis --disable-exact-rooting --enable-gcincremental \
-    --disable-debug --enable-strip --enable-install-strip
+    --disable-debug --disable-debug-symbols --enable-strip --enable-install-strip
 
 make -j$cpus
-
-$STRIP --strip-unneeded libjs_static.a
 
 ###
 
