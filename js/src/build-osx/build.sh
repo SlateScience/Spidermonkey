@@ -4,6 +4,7 @@ cpus=$(sysctl hw.ncpu | awk '{print $2}')
 
 # cleanup
 ls | grep -v build.sh | xargs rm -rf
+rm -rf .deps
 
 # configure
 ../configure --disable-shared-js --disable-tests --enable-intl-api=no --enable-llvm-hacks \

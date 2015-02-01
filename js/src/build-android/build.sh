@@ -20,8 +20,8 @@ STRIP=$TOOLCHAIN/bin/${TARGET}-strip
 
 ###
 
-rm -rf dist
-rm -f ./config.cache
+ls | grep -v build.sh | xargs rm -rf
+rm -rf .deps
 
 ../configure --with-android-ndk=$NDK_ROOT \
     --with-android-toolchain=$TOOLCHAIN \

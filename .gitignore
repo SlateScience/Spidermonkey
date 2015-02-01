@@ -52,8 +52,3 @@ js/src/build-osx/*
 !js/src/build-ios/build.sh
 !js/src/build-win32/build.sh
 !js/src/build-osx/build.sh
-
-# Ignore the Android dist files/directories
-./include
-./lib
-js/src/autom4te.cache
